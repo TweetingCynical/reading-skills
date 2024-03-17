@@ -1,0 +1,87 @@
+[
+  {
+    "type": "Set 1",
+    "sounds": [
+      "m",
+      "a",
+      "s",
+      "d",
+      "t",
+      "i",
+      "n",
+      "p",
+      "g",
+      "o",
+      "c",
+      "k",
+      "u",
+      "b",
+      "f",
+      "e",
+      "l",
+      "h",
+      "r",
+      "j",
+      "v",
+      "y",
+      "w",
+      "z",
+      "x",
+      "sh",
+      "th",
+      "ch",
+      "qu",
+      "ng",
+      "nk",
+      "ck"
+    ],
+    "collections": ["Blending Books", "Red", "Green", "Purple"],
+    "stretchy": ["f", "l", "m", "n", "r", "s", "v", "z", "sh", "th", "ng", "nk"]
+  },
+  {
+    "type": "Set 2",
+    "sounds": [
+      "ay",
+      "ee",
+      "igh",
+      "ow",
+      "oo",
+      "oo",
+      "ar",
+      "or",
+      "air",
+      "ir",
+      "ou",
+      "oy"
+    ],
+    "collections": ["Pink", "Orange", "Yellow"]
+  },
+  {
+    "type": "Set 3",
+    "sounds": [
+      "ea",
+      "oi",
+      "a-e",
+      "i-e",
+      "o-e",
+      "u-e",
+      "aw",
+      "are",
+      "ur",
+      "er",
+      "ow",
+      "ai",
+      "oa",
+      "ew",
+      "ire",
+      "ear",
+      "ure"
+    ],
+    "collections": ["Blue", "Grey"]
+  },
+  {
+    "type": "Additional",
+    "sounds": ["ue", "ie", "au", "e-e", "e", "kn", "ck", "wh", "ph"],
+    "collections": []
+  }
+]

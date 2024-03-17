@@ -1,0 +1,24 @@
+/* Import two fonts from Google api */
+@import url("https://fonts.googleapis.com/css?family=Comfortaa&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+
+/* Import local fonts */
+@font-face {
+  font-family: "Looped";
+  src: url("/assets/fonts/Looped.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Standard";
+  src: url("/assets/fonts/Standard.ttf") format("truetype");
+}
+
+/* Colour Pallette */
+:root {
+  --Blue: #4285f4;
+  --Red: #ea4335;
+  --Green: #34a853;
+  --Yellow: #fbbc05;
+  --coreFont: Montserrat;
+  --titleFont: Comfortaa;
+}
