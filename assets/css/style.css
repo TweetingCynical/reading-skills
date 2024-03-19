@@ -5,12 +5,12 @@
 /* Import local fonts */
 @font-face {
   font-family: "Looped";
-  src: url("/assets/fonts/Looped.ttf") format("truetype");
+  src: url("../fonts/Looped.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Standard";
-  src: url("/assets/fonts/Standard.ttf") format("truetype");
+  src: url("../fonts/Standard.ttf") format("truetype");
 }
 
 /* Colour Pallette */
