@@ -15,10 +15,149 @@
 
 /* Colour Pallette */
 :root {
-  --Blue: #4285f4;
-  --Red: #ea4335;
-  --Green: #34a853;
-  --Yellow: #fbbc05;
   --coreFont: Montserrat;
   --titleFont: Comfortaa;
+  --darkBlue: #2a2e70;
+  --purple: #5d2550;
+  --red: #de3d2c;
+  --lightRed: #ea8c85;
+  --yellow: #f7c43f;
+  --lightYellow: #f9db94;
+  --green: #cccf3b;
+  --lightGreen: #dfe191;
+  --lightBlue: #56c0d3;
+  --xLightBlue: #9dd9e3;
+  --grey: #545454;
+  --lightGrey: #7f7f7f;
+}
+
+.navbar-exceed {
+  max-width: 1400px;
+}
+
+#create-link {
+  color: var(--green);
+}
+
+#speed-sounds-link {
+  color: var(--lightBlue);
+}
+
+#red-words-link {
+  color: var(--red);
+}
+
+#books-link {
+  color: var(--yellow);
+}
+
+#create-link,
+#speed-sounds-link,
+#red-words-link,
+#books-link {
+  font-weight: bold;
+}
+
+#create-link:hover,
+#speed-sounds-link:hover,
+#red-words-link:hover,
+#books-link:hover {
+  color: var(--darkBlue);
+  transform: scale(1.05);
+}
+
+html {
+  max-width: 1280px;
+  background-color: var(--darkBlue);
+  margin: 0 auto;
+}
+
+body {
+  font-family: "Standard";
+}
+
+#myCanvas {
+  /* width: 800px;
+  height: 600px; */
+  border: 5px solid var(--darkBlue);
+  cursor: crosshair;
+}
+
+.canvasBtn {
+  width: 80px;
+  margin: 3px 0;
+}
+
+.canvasBtn:hover {
+  transform: scale(1.08);
+  border: 3px solid var(--purple);
+}
+
+.selectedBtn {
+  border: 3px solid var(--darkBlue) !important;
+}
+
+.deactivated {
+  opacity: 0.5;
+  pointer-events: none; /* Optional: Disables clicking on the button */
+}
+
+.timerImg,
+.scoreImg {
+  width: 50px;
+}
+
+.timer,
+.score {
+  border: 3px solid var(--darkBlue);
+  align-items: center;
+  padding: 5px;
+}
+
+#timer,
+#score {
+  font-family: var(--titleFont);
+  font-size: 50px;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+p {
+  font-family: "Standard";
+  font-size: 60px;
+}
+
+.speed-sounds-set {
+  display: block;
+  flex-wrap: wrap;
+}
+
+.sound-card {
+  width: 150px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.soundImg {
+  width: 150px;
+}
+
+.red-word {
+  color: var(--red);
+}
+
+.word-card {
+  width: 250px;
+  height: 100px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  font-family: "Standard";
 }

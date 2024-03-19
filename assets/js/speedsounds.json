@@ -1,6 +1,7 @@
 [
   {
     "type": "Set 1",
+    "ref": "set1",
     "sounds": [
       "m",
       "a",
@@ -35,18 +36,24 @@
       "nk",
       "ck"
     ],
-    "collections": ["Blending Books", "Red", "Green", "Purple"],
+    "collections": [
+      "Blending Books",
+      "Red Ditty Books",
+      "Green Storybooks",
+      "Purple Storybooks"
+    ],
     "stretchy": ["f", "l", "m", "n", "r", "s", "v", "z", "sh", "th", "ng", "nk"]
   },
   {
     "type": "Set 2",
+    "ref": "set2",
     "sounds": [
       "ay",
       "ee",
       "igh",
       "ow",
       "oo",
-      "oo",
+      "ooo",
       "ar",
       "or",
       "air",
@@ -54,10 +61,11 @@
       "ou",
       "oy"
     ],
-    "collections": ["Pink", "Orange", "Yellow"]
+    "collections": ["Pink Storybooks", "Orange Storybooks", "Yellow Storybooks"]
   },
   {
     "type": "Set 3",
+    "ref": "set3",
     "sounds": [
       "ea",
       "oi",
@@ -77,10 +85,11 @@
       "ear",
       "ure"
     ],
-    "collections": ["Blue", "Grey"]
+    "collections": ["Blue Storybooks", "Grey Storybooks"]
   },
   {
     "type": "Additional",
+    "ref": "additional",
     "sounds": ["ue", "ie", "au", "e-e", "e", "kn", "ck", "wh", "ph"],
     "collections": []
   }
