@@ -75,12 +75,20 @@ let lastY = 0;
 // Function to start painting
 function startPainting(e) {
   painting = true;
+  let clientX, clientY;
 
-  if (e) {
-    const canvasRect = canvas.getBoundingClientRect();
-    lastX = e.clientX - canvasRect.left;
-    lastY = e.clientY - canvasRect.top;
+  if (e.type.includes("touch")) {
+    // Prevent default touch behaviour to avoid scrolling
+    e.preventDefault();
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX;
+    clientY = e.clientY;
   }
+  const canvasRect = canvas.getBoundingClientRect();
+  lastX = e.clientX - canvasRect.left;
+  lastY = e.clientY - canvasRect.top;
 
   draw();
 }
@@ -90,11 +98,19 @@ canvas.addEventListener("mousedown", startPainting);
 canvas.addEventListener("mouseup", stopPainting);
 canvas.addEventListener("mousemove", draw);
 
-// Function to stop painting
-function stopPainting() {
+// Add touch event listeners
+canvas.addEventListener("touchstart", startPainting, { passive: false });
+canvas.addEventListener("touchend", stopPainting, { passive: false });
+canvas.addEventListener("touchmove", draw, { passive: false });
+
+// Modified event listener to stop painting, compatible with touch
+function stopPainting(e) {
+  if (e.type.includes("touch")) {
+    e.preventDefault(); // Prevent scrolling/zooming
+  }
   painting = false;
   ctx.beginPath(); // Start a new path for subsequent drawings
-  updateButtonStates(); // Update button states after redo
+  updateButtonStates(); // Update button states
 }
 
 function updateButtonStates() {
@@ -175,6 +191,17 @@ function refreshCanvas() {
 // Function to handle drawing actions
 function draw(e) {
   if (!painting || !e) return;
+
+  let clientX, clientY;
+  if (e && e.type.includes("touch")) {
+    // Prevent default behavior
+    e.preventDefault();
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else if (e) {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  }
 
   const canvasRect = canvas.getBoundingClientRect();
   const mouseX = e.clientX - canvasRect.left;
