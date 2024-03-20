@@ -1,6 +1,42 @@
 [
   {
     "type": "Red Ditty Books",
+    "code": "r0",
+    "book": 0,
+    "title": "Pin it on",
+    "new_red_words": ["put"],
+    "red_words": [],
+    "green_words": [
+      "pin",
+      "on",
+      "not",
+      "leg",
+      "chin",
+      "tum",
+      "yes",
+      "that’s",
+      "zip",
+      "up",
+      "run",
+      "hen",
+      "in",
+      "red",
+      "hat",
+      "fox",
+      "sun",
+      "man",
+      "top",
+      "kid",
+      "fun",
+      "let’s",
+      "van",
+      "got",
+      "shed"
+    ],
+    "speedy_green_words": ["it", "on", "a"]
+  },
+  {
+    "type": "Red Ditty Books",
     "code": "r1",
     "book": 1,
     "title": "Put it on",
@@ -32,7 +68,8 @@
       "van",
       "got",
       "shed"
-    ]
+    ],
+    "speedy_green_words": ["it", "on", "a"]
   },
   {
     "type": "Red Ditty Books",
