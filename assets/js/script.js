@@ -288,7 +288,7 @@ const createSpeedSounds = (speedsoundsData) => {
       // Display oo instead of ooo for the look sound
       cardSound.textContent = sound === "ooo" ? sound.substring(0, 2) : sound;
       const cardImg = document.createElement("img");
-      cardImg.src = `assets/images/sounds/${set.ref}/${sound}.png`;
+      cardImg.src = `assets/images/speedsounds/${set.ref}/${sound}.png`;
       cardImg.className = "soundImg p-1 m-1";
       card.appendChild(cardSound);
       card.appendChild(cardImg);
