@@ -44,7 +44,7 @@
               <li id="timer">60</li>
             </ul>
 
-            <ul class="score d-flex shadow rounded p-1 m-1">
+            <ul class="score d-flex shadow rounded p-1 m-1" id="scoreCard">
               <li>
                 <img
                   class="scoreImg m-1"
@@ -99,6 +99,11 @@
         </div>
       </nav>
     </header>
+
+    <audio id="pointSound">
+      <source src="./assets/audio/correct.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
 
     <!-- max-width for ultra wide resolutions -->
     <div class="container-fluid">

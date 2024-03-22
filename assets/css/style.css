@@ -143,6 +143,11 @@ body {
   pointer-events: none; /* Optional: Disables clicking on the button */
 }
 
+#scoreCard,
+#timerCard {
+  cursor: pointer;
+}
+
 .timerImg,
 .scoreImg {
   width: 50px;

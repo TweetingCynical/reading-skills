@@ -9,6 +9,10 @@ const speedSoundsSection = document.getElementById("speedsounds");
 const redWordsSection = document.getElementById("redwords");
 const booksSection = document.getElementById("books");
 
+// Initial timer and score
+let timer = 60;
+let score = 0;
+
 // Add event listeners to elements by ID
 const addEventListeners = (setsData, booksData) => {
   const logo = document.getElementById("logo");
@@ -224,5 +228,18 @@ const init = () => {
       console.error("Error fetching JSON:", error);
     });
 };
+
+// TEMPORARY SCORING solution: Increment score by 1 when clicking the score button
+document.getElementById("scoreCard").addEventListener("click", function () {
+  // Increment the score by 1
+  score++; // Assuming score is a global variable representing the current score
+  // Update the score display
+  document.getElementById("score").textContent = score;
+
+  // Play the sound
+  const pointSound = document.getElementById("pointSound");
+  pointSound.currentTime = 0; // Rewind to the beginning in case the sound is already playing
+  pointSound.play();
+});
 
 init();
