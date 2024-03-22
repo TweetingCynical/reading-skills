@@ -15,20 +15,63 @@
     />
     <link
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
     <title>Reading Skills</title>
   </head>
   <body>
     <!-- Header -->
     <header>
-      <nav class="navbar navbar-expand-lg">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
+          <!-- Logo -->
+          <a class="navbar-brand" id="logo" href="#">
             <img src="./assets/images/logosmall.png" alt="" />
           </a>
+
+          <!-- Timer and Score (Align Right) -->
+          <div
+            class="d-flex justify-content-end align-items-center flex-grow-1"
+          >
+            <ul class="timer d-flex shadow rounded p-1 m-1">
+              <li>
+                <img
+                  class="timerImg m-1"
+                  src="./assets/images/timer.png"
+                  alt=""
+                />
+              </li>
+              <li id="timer">60</li>
+            </ul>
+
+            <ul class="score d-flex shadow rounded p-1 m-1">
+              <li>
+                <img
+                  class="scoreImg m-1"
+                  src="./assets/images/yellow-star.png"
+                  alt=""
+                />
+              </li>
+              <li id="score">0</li>
+            </ul>
+          </div>
+
+          <!-- Hamburger menu button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Navigation links -->
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <a
                   class="nav-link active"
@@ -52,27 +95,6 @@
                 <a class="nav-link" id="books-link" href="#books">Books</a>
               </li>
             </ul>
-            <ul class="timer d-flex shadow rounded p-1 m-1">
-              <li>
-                <img
-                  class="timerImg m-1"
-                  src="./assets/images/timer.png"
-                  alt=""
-                />
-              </li>
-              <li id="timer">60</li>
-            </ul>
-
-            <ul class="score d-flex shadow rounded p-1 m-1">
-              <li>
-                <img
-                  class="scoreImg m-1"
-                  src="./assets/images/yellow-star.png"
-                  alt=""
-                />
-              </li>
-              <li id="score">0</li>
-            </ul>
           </div>
         </div>
       </nav>
@@ -83,7 +105,7 @@
       <div class="row">
         <div>
           <!-- Create zone -->
-          <section class="row justify-content-center">
+          <!-- <section class="row justify-content-center">
             <section id="canvasBtns" class="p-3 col-lg-1 align-self-center">
               <img
                 src="./assets/images/canvas/dark-blue-pen.png"
@@ -170,10 +192,10 @@
                 id="share"
               />
             </section>
-          </section>
-          <section class="choices"></section>
-          <section id="speedsounds" class="speedsounds"></section>
-          <section id="redwords" class="redwords"></section>
+          </section> -->
+          <section id="choices"></section>
+          <!-- <section id="speedsounds" class="speedsounds"></section>
+          <section id="redwords" class="redwords"></section> -->
           <section id="books" class="books"></section>
         </div>
       </div>
@@ -182,5 +204,6 @@
     <!-- Footer -->
     <!-- Link to JavaScript -->
     <script src="./assets/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

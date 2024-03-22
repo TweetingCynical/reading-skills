@@ -31,9 +31,9 @@
   --lightGrey: #7f7f7f;
 }
 
-.navbar-exceed {
+/* .navbar-exceed {
   max-width: 1400px;
-}
+} */
 
 #create-link {
   color: var(--green);
@@ -67,13 +67,54 @@
 }
 
 html {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   background-color: var(--darkBlue);
   margin: 0 auto;
+  padding: 20px 50px;
 }
 
 body {
   font-family: "Standard";
+}
+
+.dropdowns {
+  border: 3px solid var(--darkBlue);
+}
+
+.navigation-button {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  background-color: rgba(42, 46, 112, 0.5);
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 5rem;
+  max-height: 9rem;
+}
+
+.prev-button {
+  left: 0;
+  top: 50%; /* Position halfway up */
+  transform: translateY(-50%); /* Adjust vertical position */
+}
+
+.next-button {
+  right: 0;
+  top: 50%; /* Position halfway up */
+  transform: translateY(-50%); /* Adjust vertical position */
+}
+
+#bookPageContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.book-page {
+  border: 3px solid var(--darkBlue);
+  width: calc(100% - 2 * 1rem);
 }
 
 #myCanvas {
@@ -121,8 +162,8 @@ body {
 }
 
 .hidden {
-  display: none;
-  visibility: hidden;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 p {
@@ -160,4 +201,17 @@ p {
   justify-content: center;
   font-size: 50px;
   font-family: "Standard";
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 414px) {
+  html {
+    padding: 5% 10px;
+  }
+
+  .navigation-button {
+    padding: 5px; /* Reduce padding for smaller screens */
+    font-size: 1.5rem; /* Reduce font size for smaller screens */
+    max-height: 3rem; /* Adjust max height for smaller screens */
+  }
 }

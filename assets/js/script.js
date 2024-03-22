@@ -1,63 +1,38 @@
+// Import JSON objects for stored values
 const speedsounds = "assets/js/speedsounds.json";
 const books = "assets/js/books.json";
 const sets = "assets/js/sets.json";
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-const choices = document.getElementsByClassName("choices");
+
+// Set links to elements in DOM
+const choices = document.getElementById("choices");
 const speedSoundsSection = document.getElementById("speedsounds");
 const redWordsSection = document.getElementById("redwords");
 const booksSection = document.getElementById("books");
 
-// Set pen colours
-const penColors = {
-  "dark-blue-pen": "#2a2e70",
-  "red-pen": "#de3d2c",
-  "yellow-pen": "#f7c43f",
-  "green-pen": "#cccf3b",
-  "blue-pen": "#56c0d3",
-  "purple-pen": "#5d2550",
-  eraser: "white",
+// Add event listeners to elements by ID
+const addEventListeners = (setsData, booksData) => {
+  const logo = document.getElementById("logo");
+  const createLink = document.getElementById("create-link");
+  const speedSoundsLink = document.getElementById("speed-sounds-link");
+  const redWordsLink = document.getElementById("red-words-link");
+  const booksLink = document.getElementById("books-link");
+
+  // Event listener function
+  const handleLinkClick = () => {
+    // Invoke setsDropdown function again
+    setsDropdown(setsData, booksData);
+  };
+
+  // Add event listeners to elements
+  if (logo) logo.addEventListener("click", handleLinkClick);
+  if (createLink) createLink.addEventListener("click", handleLinkClick);
+  if (speedSoundsLink)
+    speedSoundsLink.addEventListener("click", handleLinkClick);
+  if (redWordsLink) redWordsLink.addEventListener("click", handleLinkClick);
+  if (booksLink) booksLink.addEventListener("click", handleLinkClick);
 };
 
-// Function to handle pen color change
-function changePenColor(color) {
-  ctx.strokeStyle = color;
-}
-
-// Add event listeners to each pen color image
-const penColorImages = document.querySelectorAll(".pen-color");
-penColorImages.forEach((image) => {
-  image.addEventListener("click", function () {
-    const colorId = this.id;
-    const color = penColors[colorId];
-    if (color) {
-      changePenColor(color);
-    }
-
-    // Toggle class 'selectedBtn' for the clicked image
-    this.classList.add("selectedBtn");
-
-    // Remove class 'selectedBtn' from all other pen color images
-    penColorImages.forEach((img) => {
-      if (img !== this) {
-        img.classList.remove("selectedBtn");
-      }
-    });
-  });
-});
-
-const undoStack = []; // Stack to store drawing actions for undo
-const redoStack = []; // Stack to store undone actions for redo
-
-// Event listener for undo button
-document.getElementById("undo").addEventListener("click", undo);
-
-// Event listener for redo button
-document.getElementById("redo").addEventListener("click", redo);
-
-// Event listener for refresh button
-document.getElementById("refresh").addEventListener("click", refreshCanvas);
-
+// Fetch data from JSON
 const fetchData = (url) => {
   return fetch(url).then((response) => {
     if (!response.ok) {
@@ -67,322 +42,183 @@ const fetchData = (url) => {
   });
 };
 
-// Variables to track mouse movements
-let painting = false;
-let lastX = 0;
-let lastY = 0;
+// Create dropdown for choosing Speedsounds / Red words / Books
+// Sets
+const setsDropdown = (setsData, booksData) => {
+  const existingSetsElement = document.getElementById("setsDropdown");
+  const existingBooksDropdown = document.getElementById("booksDropdown");
+  const existingBooksElement = document.getElementById("bookPageContainer");
 
-// Function to start painting
-function startPainting(e) {
-  painting = true;
-  let clientX, clientY;
+  // Check if any of the elements exist, and remove them if they do
+  if (existingSetsElement) existingSetsElement.remove();
+  if (existingBooksDropdown) existingBooksDropdown.remove();
+  if (existingBooksElement) existingBooksElement.remove();
 
-  if (e.type.includes("touch")) {
-    // Prevent default touch behaviour to avoid scrolling
-    e.preventDefault();
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-  const canvasRect = canvas.getBoundingClientRect();
-  lastX = e.clientX - canvasRect.left;
-  lastY = e.clientY - canvasRect.top;
-
-  draw();
-}
-
-// Event listener to track mouse movements
-canvas.addEventListener("mousedown", startPainting);
-canvas.addEventListener("mouseup", stopPainting);
-canvas.addEventListener("mousemove", draw);
-
-// Add touch event listeners
-canvas.addEventListener("touchstart", startPainting, { passive: false });
-canvas.addEventListener("touchend", stopPainting, { passive: false });
-canvas.addEventListener("touchmove", draw, { passive: false });
-
-// Modified event listener to stop painting, compatible with touch
-function stopPainting(e) {
-  if (e.type.includes("touch")) {
-    e.preventDefault(); // Prevent scrolling/zooming
-  }
-  painting = false;
-  ctx.beginPath(); // Start a new path for subsequent drawings
-  updateButtonStates(); // Update button states
-}
-
-function updateButtonStates() {
-  const undoButton = document.getElementById("undo");
-  const redoButton = document.getElementById("redo");
-  const saveButton = document.getElementById("save"); // Assuming you have a save button
-  const refreshButton = document.getElementById("refresh");
-
-  // Updating undo and redo buttons based on their respective stacks
-  undoButton.classList.toggle("deactivated", undoStack.length === 0);
-  redoButton.classList.toggle("deactivated", redoStack.length === 0);
-
-  // Deactivate save and refresh buttons if undo stack is empty
-  const isCanvasClean = undoStack.length === 0;
-  saveButton.classList.toggle("deactivated", isCanvasClean);
-  refreshButton.classList.toggle("deactivated", isCanvasClean);
-}
-
-// Function to undo the last drawing action
-function undo() {
-  let lastColor = null;
-  let consecutiveSameColorActions = 0;
-
-  while (undoStack.length > 0) {
-    const action = undoStack.pop();
-    if (action.type === "draw") {
-      if (lastColor === null) {
-        lastColor = action.color;
-        consecutiveSameColorActions++;
-      } else if (lastColor === action.color) {
-        consecutiveSameColorActions++;
-      } else {
-        // Different color encountered, stop undoing
-        undoStack.push(action); // Push back the action for the different color
-        break;
-      }
-    }
-
-    // Draw the action
-    redrawCanvas();
-
-    if (consecutiveSameColorActions === 20) {
-      // Undo all actions with the same color
-      break;
-    }
-
-    // Push undone action onto redo stack
-    redoStack.push(action);
-  }
-
-  // Reset consecutiveSameColorActions counter
-  consecutiveSameColorActions = 0;
-  updateButtonStates(); // Update button states after redo
-}
-
-// Function to redo the last undone action
-function redo() {
-  if (redoStack.length > 0) {
-    const lastRedoAction = redoStack.pop(); // Get the last action from redo stack
-
-    if (lastRedoAction.type === "draw") {
-      undoStack.push(lastRedoAction); // Push the action back to undo stack
-      redrawCanvas(); // Redraw canvas with the last undone action
-    }
-  }
-  updateButtonStates(); // Update button states after redo
-}
-
-// Function to refresh the canvas (wipe clean)
-function refreshCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-  undoStack.length = 0; // Clear undo stack
-  redoStack.length = 0; // Clear redo stack
-  updateButtonStates(); // Update button states after redo
-}
-
-// Function to handle drawing actions
-function draw(e) {
-  if (!painting || !e) return;
-
-  let clientX, clientY;
-  if (e && e.type.includes("touch")) {
-    // Prevent default behavior
-    e.preventDefault();
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else if (e) {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-
-  const canvasRect = canvas.getBoundingClientRect();
-  const mouseX = e.clientX - canvasRect.left;
-  const mouseY = e.clientY - canvasRect.top;
-
-  // Calculate distance and angle between current and previous points
-  const dx = mouseX - lastX;
-  const dy = mouseY - lastY;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  const angle = Math.atan2(dy, dx);
-
-  // Set pen width based on distance (optional)
-  ctx.lineWidth = Math.max(5, 20 - distance * 0.05);
-  ctx.lineJoin = "round";
-  ctx.lineCap = "round";
-
-  // Number of additional points to add between current and previous points
-  const segments = Math.floor(distance / 5); // Adjust segment length as needed
-
-  // Draw additional points along the path
-  for (let i = 0; i <= segments; i++) {
-    const x = lastX + Math.cos(angle) * (distance * (i / segments));
-    const y = lastY + Math.sin(angle) * (distance * (i / segments));
-    ctx.lineTo(x, y);
-    ctx.stroke();
-
-    // Save drawing action for undo
-    undoStack.push({
-      type: "draw",
-      path: { startX: lastX, startY: lastY, endX: x, endY: y },
-      color: ctx.strokeStyle,
-      lineWidth: ctx.lineWidth,
-    });
-  }
-
-  lastX = mouseX;
-  lastY = mouseY;
-}
-
-// Function to redraw canvas based on drawing actions in the undo stack
-function redrawCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-  undoStack.forEach((action) => {
-    if (action.type === "draw") {
-      ctx.strokeStyle = action.color;
-      ctx.lineWidth = action.lineWidth;
-      drawAction(action.path);
-    }
-  });
-}
-
-// Function to draw a single action
-function drawAction(path) {
-  ctx.beginPath();
-  ctx.moveTo(path.startX, path.startY);
-  ctx.lineTo(path.endX, path.endY);
-  ctx.stroke();
-}
-
-// TIDY UP LATER
-const setsDropdown = (setsData) => {
   const setsElement = document.createElement("select");
+  setsElement.className = "form-select rounded shadow dropdowns";
+  setsElement.id = "setsDropdown";
+
+  // Add default option for sets dropdown
+  const defaultSetOption = document.createElement("option");
+  defaultSetOption.value = "";
+  defaultSetOption.textContent = "Choose a Book Set";
+  setsElement.appendChild(defaultSetOption);
+
   Array.from(setsData.sets).forEach((set) => {
     const option = document.createElement("option");
     option.value = set;
     option.textContent = set;
     setsElement.appendChild(option);
   });
-  choices[0].appendChild(setsElement);
-};
+  choices.appendChild(setsElement);
 
-const createSpeedSounds = (speedsoundsData) => {
-  Array.from(speedsoundsData).forEach((set) => {
-    const cardParent = document.createElement("div");
-    cardParent.className = `speed-sounds-set ${set.type} d-flex`;
-    const cardHeader = document.createElement("h2");
-    cardHeader.innerText = set.type;
-    cardParent.appendChild(cardHeader);
-    Array.from(set.sounds).forEach((sound) => {
-      const card = document.createElement("div");
-      card.id = sound;
-      card.className =
-        "card d-flex shadow m-2 p-2 rounded border border-dark border-2 sound-card";
-      const cardSound = document.createElement("p");
-      // Display oo instead of ooo for the look sound
-      cardSound.textContent = sound === "ooo" ? sound.substring(0, 2) : sound;
-      const cardImg = document.createElement("img");
-      cardImg.src = `assets/images/speedsounds/${set.ref}/${sound}.png`;
-      cardImg.className = "soundImg p-1 m-1";
-      card.appendChild(cardSound);
-      card.appendChild(cardImg);
-      cardParent.appendChild(card);
-    });
-    speedSoundsSection.appendChild(cardParent);
+  // Event listener for sets dropdown
+  setsElement.addEventListener("change", (event) => {
+    const selectedSet = event.target.value;
+    const filteredBooks = booksData.filter((book) => book.type === selectedSet);
+    createBooksDropdown(filteredBooks);
   });
 };
 
-const createBooks = (booksData) => {
-  const bookSection = document.createElement("section");
-  bookSection.className =
-    "card d-flex shadow m-2 p-2 rounded border border-dark border-2";
-  Array.from(booksData).forEach((book) => {
-    const bookCard = document.createElement("div");
-    bookCard.className =
-      "card d-flex shadow m-2 p-2 rounded border border-dark border-2";
-    const bookTitle = document.createElement("h2");
-    bookTitle.innerText = `${book.title} (${book.type} - ${book.book})`;
-    const newRedWords = document.createElement("h3");
-    newRedWords.innerText = "New Red Words:";
-    const redWords = document.createElement("h3");
-    redWords.innerText = "Red Words:";
-    const greenWords = document.createElement("h3");
-    greenWords.innerText = "Green Words:";
-    bookCard.appendChild(bookTitle);
+// Books
+const createBooksDropdown = (filteredBooks) => {
+  // Remove existing books dropdown if it exists
+  const existingBooksDropdown = document.getElementById("booksDropdown");
+  if (existingBooksDropdown) {
+    existingBooksDropdown.remove();
+  }
 
-    // Conditionally append newRedWords
-    if (book.new_red_words && book.new_red_words.length > 0) {
-      const newRedWords = document.createElement("h3");
-      newRedWords.innerText = "New Red Words:";
-      bookCard.appendChild(newRedWords);
-      const newRedWordsContainer = document.createElement("div");
-      newRedWordsContainer.className = "d-flex flex-wrap";
-      Array.from(book.new_red_words).forEach((word) => {
-        const wordCard = document.createElement("h4");
-        wordCard.className =
-          "card shadow m-2 p-2 rounded border border-danger border-2 red-word word-card";
-        wordCard.innerText = word;
-        newRedWordsContainer.appendChild(wordCard);
-      });
-      bookCard.appendChild(newRedWordsContainer);
-    }
+  const booksElement = document.createElement("select");
+  booksElement.id = "booksDropdown";
+  booksElement.className = "form-select rounded shadow dropdowns";
 
-    // Conditionally append redWords
-    if (book.red_words && book.red_words.length > 0) {
-      const redWords = document.createElement("h3");
-      redWords.innerText = "Red Words:";
-      bookCard.appendChild(redWords);
-      const redWordsContainer = document.createElement("div");
-      redWordsContainer.className = "d-flex flex-wrap";
-      Array.from(book.red_words).forEach((word) => {
-        const wordCard = document.createElement("h4");
-        wordCard.className =
-          "card shadow m-2 p-2 rounded border border-danger border-2 red-word word-card";
-        wordCard.innerText = word;
-        redWordsContainer.appendChild(wordCard);
-      });
-      bookCard.appendChild(redWordsContainer);
-    }
+  // Add default option for books dropdown
+  const defaultBookOption = document.createElement("option");
+  defaultBookOption.value = "";
+  defaultBookOption.textContent = "Choose a Book Title";
+  booksElement.appendChild(defaultBookOption);
 
-    // Conditionally append greenWords
-    if (book.green_words && book.green_words.length > 0) {
-      const greenWords = document.createElement("h3");
-      greenWords.innerText = "Green Words:";
-      bookCard.appendChild(greenWords);
-      const greenWordsContainer = document.createElement("div");
-      greenWordsContainer.className = "d-flex flex-wrap";
-      Array.from(book.green_words).forEach((word) => {
-        const wordCard = document.createElement("h4");
-        wordCard.className =
-          "card d-flex shadow m-2 p-2 rounded border border-success border-2 green-word word-card";
-        wordCard.innerText = word;
-        greenWordsContainer.appendChild(wordCard);
-      });
-      bookCard.appendChild(greenWordsContainer);
-    }
-
-    bookSection.appendChild(bookCard);
+  filteredBooks.forEach((book) => {
+    const option = document.createElement("option");
+    option.value = book.title;
+    option.textContent = book.title;
+    booksElement.appendChild(option);
   });
-  booksSection.appendChild(bookSection);
-};
-// TIDY UP LATER
+  choices.appendChild(booksElement);
 
+  // Event listener for books dropdown
+  booksElement.addEventListener("change", (event) => {
+    const selectedTitle = event.target.value;
+    const selectedBook = filteredBooks.find(
+      (book) => book.title === selectedTitle
+    );
+    renderBook(selectedBook);
+    // Set selected book as a global variable or use it as needed
+    console.log("Selected Book:", selectedBook);
+  });
+};
+
+// Global variables to keep track of current page and total pages
+let currentPageIndex = 0;
+let totalPages = 0;
+
+// Function to load and display the current page
+const displayCurrentPage = (selectedBook) => {
+  const bookPage = document.getElementById("bookPage");
+  bookPage.src = `./assets/images/books/${selectedBook.code}/${selectedBook.pages[currentPageIndex]}.jpg`;
+};
+
+// Function to handle next page navigation
+const nextPage = (selectedBook) => {
+  if (currentPageIndex < totalPages - 1) {
+    currentPageIndex++;
+    displayCurrentPage(selectedBook);
+    updateNavigationButtons();
+  }
+};
+
+// Function to handle previous page navigation
+const previousPage = (selectedBook) => {
+  if (currentPageIndex > 0) {
+    currentPageIndex--;
+    displayCurrentPage(selectedBook);
+    updateNavigationButtons();
+  }
+};
+
+// Function to update navigation buttons based on current page
+const updateNavigationButtons = () => {
+  const prevButton = document.getElementById("prevButton");
+  const nextButton = document.getElementById("nextButton");
+  if (prevButton && nextButton) {
+    prevButton.disabled = currentPageIndex === 0;
+    nextButton.disabled = currentPageIndex === totalPages - 1;
+  }
+};
+
+// Create navigation buttons
+// Function to create navigation buttons with Font Awesome icons
+const createNavigationButtons = (selectedBook) => {
+  const prevButton = document.createElement("button");
+  prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+  prevButton.classList.add("navigation-button", "prev-button");
+  prevButton.addEventListener("click", () => previousPage(selectedBook));
+
+  const nextButton = document.createElement("button");
+  nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  nextButton.classList.add("navigation-button", "next-button");
+  nextButton.addEventListener("click", () => nextPage(selectedBook));
+
+  // Append buttons to bookPageContainer
+  const bookPageContainer = document.getElementById("bookPageContainer");
+  bookPageContainer.appendChild(prevButton);
+  bookPageContainer.appendChild(nextButton);
+
+  // Update button states initially
+  updateNavigationButtons();
+};
+
+// Create Book render
+const renderBook = (selectedBook) => {
+  // Remove existing book space if it exists
+  const existingBookSpace = document.getElementById("bookPageContainer");
+  if (existingBookSpace) {
+    existingBookSpace.remove();
+  }
+
+  const bookPageContainer = document.createElement("div");
+  bookPageContainer.id = "bookPageContainer";
+  bookPageContainer.classList = "mt-3 shadow-lg rounded";
+  booksSection.appendChild(bookPageContainer);
+
+  const bookPage = document.createElement("img");
+  bookPage.id = "bookPage";
+  bookPage.classList = "m-3 book-page";
+  bookPage.src = `./assets/images/books/${selectedBook.code}/${selectedBook.pages[currentPageIndex]}.jpg`;
+  bookPageContainer.appendChild(bookPage);
+
+  // Create navigation buttons
+  createNavigationButtons(selectedBook);
+
+  // Update total pages
+  totalPages = selectedBook.pages.length;
+
+  // Hide dropdowns
+  const setsDropdown = document.getElementById("setsDropdown");
+  const booksDropdown = document.getElementById("booksDropdown");
+  setsDropdown.classList.add("hidden");
+  booksDropdown.classList.add("hidden");
+};
+
+// Initialise code on load
 const init = () => {
   Promise.all([fetchData(speedsounds), fetchData(books), fetchData(sets)])
     .then(([speedsoundsData, booksData, setsData]) => {
       console.log("Speedsounds data:", speedsoundsData);
       console.log("Books data:", booksData);
       console.log("Sets data:", setsData);
-      updateButtonStates();
-      setsDropdown(setsData);
-      createSpeedSounds(speedsoundsData);
-      createBooks(booksData);
+      setsDropdown(setsData, booksData);
+      addEventListeners(setsData, booksData);
     })
     .catch((error) => {
       console.error("Error fetching JSON:", error);
