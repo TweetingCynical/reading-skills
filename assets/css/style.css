@@ -315,6 +315,9 @@ p {
 
 /* Media query for smaller screens */
 @media screen and (max-width: 549px) {
+  html {
+    padding: 10px 10px;
+  }
   #soundCard,
   #wordCard {
     font-size: 3rem;
@@ -326,10 +329,6 @@ p {
 }
 
 @media screen and (max-width: 414px) {
-  html {
-    padding: 5% 10px;
-  }
-
   .navigation-button {
     padding: 5px; /* Reduce padding for smaller screens */
     font-size: 1.5rem; /* Reduce font size for smaller screens */
@@ -337,6 +336,6 @@ p {
   }
 
   .gameBtn {
-    height: 40px;
+    height: 30px;
   }
 }
