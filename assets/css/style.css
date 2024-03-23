@@ -281,6 +281,10 @@ p {
   #wordCard {
     font-size: 12rem;
   }
+
+  .gameBtn {
+    height: 70px;
+  }
 }
 
 /* Media query for smaller screens */
@@ -288,6 +292,10 @@ p {
   #soundCard,
   #wordCard {
     font-size: 9rem;
+  }
+
+  .gameBtn {
+    height: 60px;
   }
 }
 
@@ -297,6 +305,12 @@ p {
   #wordCard {
     font-size: 6rem;
   }
+
+  .gameBtn {
+    height: 50px;
+    margin: 2px 0;
+    padding: 2px;
+  }
 }
 
 /* Media query for smaller screens */
@@ -304,6 +318,10 @@ p {
   #soundCard,
   #wordCard {
     font-size: 3rem;
+  }
+
+  .gameBtn {
+    height: 45px;
   }
 }
 
@@ -316,5 +334,9 @@ p {
     padding: 5px; /* Reduce padding for smaller screens */
     font-size: 1.5rem; /* Reduce font size for smaller screens */
     max-height: 3rem; /* Adjust max height for smaller screens */
+  }
+
+  .gameBtn {
+    height: 40px;
   }
 }
