@@ -77,8 +77,84 @@ body {
   font-family: "Standard";
 }
 
+.wrapper {
+  position: relative;
+}
+
 .dropdowns {
   border: 3px solid var(--darkBlue);
+}
+
+#soundsSpace {
+  display: flex !important; /* Change display property to flex */
+  border: 3px solid var(--darkBlue);
+  justify-content: center; /* Center the items horizontally */
+  align-items: center; /* Center the items vertically */
+  cursor: pointer;
+  height: 90%;
+}
+
+#soundCard {
+  font-family: "Standard";
+  font-size: 20rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+#soundImg {
+  flex: 1; /* Let the soundImg take up the available space */
+  width: auto; /* Adjust width as needed */
+}
+
+#wordsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#wordCard {
+  font-family: "Standard";
+  font-size: 18rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+#soundCard {
+  width: 60%;
+}
+
+#soundImg {
+  width: 40%;
+}
+
+.green-word {
+  color: green;
+  border: 1rem solid green !important;
+}
+
+.red-word {
+  color: var(--red);
+  border: 1rem solid var(--red) !important;
+}
+
+.new-red-word {
+  color: var(--red);
+  border: 1rem dashed var(--red) !important;
+}
+
+#gameBtns {
+  position: absolute;
+  top: 25px;
+  left: 40px;
+  z-index: 1;
+}
+
+.gameBtn {
+  height: 80px;
+  margin: 3px 0;
+  padding: 3px;
+  cursor: pointer;
 }
 
 .navigation-button {
@@ -176,39 +252,61 @@ p {
   font-size: 60px;
 }
 
-.speed-sounds-set {
-  display: block;
-  flex-wrap: wrap;
-}
-
-.sound-card {
-  width: 150px;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-}
-
-.soundImg {
-  width: 150px;
-}
-
-.red-word {
-  color: var(--red);
-}
-
-.word-card {
-  width: 250px;
-  height: 100px;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  font-size: 50px;
-  font-family: "Standard";
+/* Media query for smaller screens */
+@media screen and (max-width: 1020px) {
+  #soundCard,
+  #wordCard {
+    font-size: 17rem;
+  }
 }
 
 /* Media query for smaller screens */
+@media screen and (max-width: 992px) {
+  #soundCard,
+  #wordCard {
+    font-size: 15rem;
+  }
+
+  #create-link:hover,
+  #speed-sounds-link:hover,
+  #red-words-link:hover,
+  #books-link:hover {
+    transform-origin: left;
+  }
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 841px) {
+  #soundCard,
+  #wordCard {
+    font-size: 12rem;
+  }
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 742px) {
+  #soundCard,
+  #wordCard {
+    font-size: 9rem;
+  }
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 646px) {
+  #soundCard,
+  #wordCard {
+    font-size: 6rem;
+  }
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 549px) {
+  #soundCard,
+  #wordCard {
+    font-size: 3rem;
+  }
+}
+
 @media screen and (max-width: 414px) {
   html {
     padding: 5% 10px;

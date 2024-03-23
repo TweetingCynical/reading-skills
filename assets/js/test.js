@@ -4,8 +4,7 @@ let score = 0;
 let currentPageIndex = 0;
 let totalPages = 0;
 let currentWordIndex = 0;
-let soundClickCounter = 0;
-let wordClickCounter = 0;
+let clickCounter = 0;
 let selectedRefValue = null;
 
 // Constants
@@ -18,9 +17,6 @@ const choices = document.getElementById("choices");
 const speedSoundsSection = document.getElementById("speedsounds");
 const wordsSection = document.getElementById("words");
 const booksSection = document.getElementById("books");
-const gameBtns = document.getElementById("gameBtns");
-const successBtn = document.getElementById("success");
-const supportBtn = document.getElementById("support");
 
 // Add event listeners to elements by ID
 const addEventListeners = (setsData, booksData, speedsoundsData) => {
@@ -62,14 +58,12 @@ const setsDropdown = (setsData, booksData, speedsoundsData) => {
   const existingBooksDropdown = document.getElementById("booksDropdown");
   const existingBooksElement = document.getElementById("bookPageContainer");
   const existingWordSpace = document.getElementById("wordsContainer");
-  const existingSoundsSpace = document.getElementById("soundsSpace");
 
   // Check if any of the elements exist, and remove them if they do
   if (existingSetsElement) existingSetsElement.remove();
   if (existingBooksDropdown) existingBooksDropdown.remove();
   if (existingBooksElement) existingBooksElement.remove();
   if (existingWordSpace) existingWordSpace.remove();
-  if (existingSoundsSpace) existingSoundsSpace.remove();
 
   const setsElement = document.createElement("select");
   setsElement.className = "form-select rounded shadow dropdowns";
@@ -137,11 +131,66 @@ const renderBooksDropdown = (filteredBooks, speedsoundsData) => {
       speedsoundsData,
       resultArray
     );
-    gameBtns.classList.remove("hidden");
 
     // Set selected book as a global variable or use it as needed
     console.log("Selected Book:", selectedBook);
   });
+};
+
+// Function to load and display the current book page
+const displayCurrentPage = (selectedBook) => {
+  const bookPage = document.getElementById("bookPage");
+  bookPage.src = `./assets/images/books/${selectedBook.code}/${selectedBook.pages[currentPageIndex]}.jpg`;
+};
+
+// Function to handle next page navigation
+const nextPage = (selectedBook) => {
+  if (currentPageIndex < totalPages - 1) {
+    currentPageIndex++;
+    displayCurrentPage(selectedBook);
+    updateNavigationButtons();
+  }
+};
+
+// Function to handle previous page navigation
+const previousPage = (selectedBook) => {
+  if (currentPageIndex > 0) {
+    currentPageIndex--;
+    displayCurrentPage(selectedBook);
+    updateNavigationButtons();
+  }
+};
+
+// Function to update navigation buttons based on current page
+const updateNavigationButtons = () => {
+  const prevButton = document.getElementById("prevButton");
+  const nextButton = document.getElementById("nextButton");
+  if (prevButton && nextButton) {
+    prevButton.disabled = currentPageIndex === 0;
+    nextButton.disabled = currentPageIndex === totalPages - 1;
+  }
+};
+
+// Create navigation buttons
+// Function to create navigation buttons with Font Awesome icons
+const createNavigationButtons = (selectedBook) => {
+  const prevButton = document.createElement("button");
+  prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+  prevButton.classList.add("navigation-button", "prev-button");
+  prevButton.addEventListener("click", () => previousPage(selectedBook));
+
+  const nextButton = document.createElement("button");
+  nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  nextButton.classList.add("navigation-button", "next-button");
+  nextButton.addEventListener("click", () => nextPage(selectedBook));
+
+  // Append buttons to bookPageContainer
+  const bookPageContainer = document.getElementById("bookPageContainer");
+  bookPageContainer.appendChild(prevButton);
+  bookPageContainer.appendChild(nextButton);
+
+  // Update button states initially
+  updateNavigationButtons();
 };
 
 // Function to shuffle array elements
@@ -240,25 +289,22 @@ const renderSpeedSounds = (selectedBook, speedsoundsData, resultArray) => {
 
   const soundsSpace = document.createElement("div");
   soundsSpace.id = "soundsSpace";
-  soundsSpace.classList = "m-3 p-3 shadow-lg rounded";
+  soundsSpace.classList = "card m-3 p-3 shadow-lg rounded";
   speedSoundsSection.appendChild(soundsSpace);
   soundsSpace.addEventListener("click", () =>
-    handleSoundCardClick(selectedBook, speedsoundsData, newArray)
-  );
-  successBtn.addEventListener("click", () =>
-    handleSoundCardClick(selectedBook, speedsoundsData, newArray)
+    handleCardClick(selectedBook, speedsoundsData, newArray)
   );
 
   // Create initial sound card
   const soundCard = document.createElement("div");
   soundCard.textContent = newArray[0];
   soundCard.id = "soundCard";
-  soundCard.classList = "card border-white d-flex m-3 p-3";
+  soundCard.classList = "card d-flex m-3 p-3 shadow-lg rounded";
 
   const soundImg = document.createElement("img");
   soundImg.id = "soundImg";
   soundImg.src = `./assets/images/speedsounds/${selectedRefValue}/${newArray[0]}.png`;
-  soundImg.classList = "d-flex m-3 p-3";
+  soundImg.classList = "card d-flex m-3 p-3 shadow-lg rounded";
 
   soundsSpace.appendChild(soundCard);
   soundsSpace.appendChild(soundImg);
@@ -283,26 +329,48 @@ const displayCurrentSound = (sound) => {
 };
 
 // Function to handle card click and display next word or sound
-const handleSoundCardClick = (selectedBook, speedsoundsData, newArray) => {
+const handleCardClick = (selectedBook, speedsoundsData, newArray) => {
   // Increment the click counter
-  soundClickCounter++;
+  clickCounter++;
+  console.log(clickCounter);
 
-  if (soundClickCounter < 30) {
-    console.log("Click count less than 30");
-    displayCurrentSound(newArray[soundClickCounter]);
-  } else if (soundClickCounter === 30) {
-    const space = document.getElementById("soundsSpace");
+  if (clickCounter < 30) {
+    if (wordsSection.contains(document.getElementById("wordContainer"))) {
+      let nextWordIndex;
+      do {
+        // Generate a random index for the next word
+        nextWordIndex = Math.floor(
+          Math.random() * selectedBook.green_words.length
+        );
+      } while (nextWordIndex === currentWordIndex); // Ensure the next word is different from the current one
+      currentWordIndex = nextWordIndex;
+
+      displayCurrentWord(selectedBook);
+    } else if (
+      speedSoundsSection.contains(document.getElementById("soundsSpace"))
+    ) {
+      displayCurrentSound(newArray[clickCounter]);
+    }
+  } else if (clickCounter === 30) {
+    // Remove word or sound space
+    const spaceToRemove = wordsSection.contains(
+      document.getElementById("wordSpace")
+    )
+      ? "wordSpace"
+      : "soundsSpace";
+    const space = document.getElementById(spaceToRemove);
     if (space) {
       space.remove();
     }
-    soundClickCounter = 0;
+
+    clickCounter = 0;
     // Render words
-    renderWords(selectedBook);
+    renderWords(selectedBook, speedsoundsData);
   }
 };
 
 // Update renderWords function
-const renderWords = (selectedBook) => {
+const renderWords = (selectedBook, speedsoundsData) => {
   const existingWordSpace = document.getElementById("wordsContainer");
   if (existingWordSpace) {
     existingWordSpace.remove();
@@ -318,11 +386,8 @@ const renderWords = (selectedBook) => {
   wordCard.textContent = "Test";
   wordCard.id = "wordCard";
   wordCard.classList = "card d-flex m-3 p-3 shadow-lg rounded";
-  wordSpace.addEventListener("click", () => {
-    handleWordCardClick(selectedBook);
-  });
-  successBtn.addEventListener("click", () => {
-    handleWordCardClick(selectedBook);
+  wordCard.addEventListener("click", () => {
+    handleCardClick(selectedBook, speedsoundsData);
   });
   wordSpace.appendChild(wordCard);
 
@@ -334,7 +399,6 @@ const renderWords = (selectedBook) => {
 // Function to update word card with current word
 const displayCurrentWord = (selectedBook) => {
   const wordCard = document.getElementById("wordCard");
-  const wordSpace = document.getElementById("wordsContainer");
   if (!wordCard) return; // Ensure wordCard element exists
 
   let currentWord;
@@ -379,57 +443,15 @@ const displayCurrentWord = (selectedBook) => {
   currentWord = array[randomIndex];
 
   // Apply class to wordCard
-  wordCard.className = `d-flex m-3 p-3`;
-  wordSpace.className = `${type} shadow-lg rounded justify-content-center`;
+  wordCard.className = `card d-flex m-3 p-3 shadow-lg rounded ${type}`;
 
   // Update word card with current word
   wordCard.textContent = currentWord;
-
-  // // Play the sound
-  // const specialFriendsSound = document.getElementById("specialFriendsSound");
-  // // Rewind to the beginning in case the sound is already playing
-  // specialFriendsSound.currentTime = 0;
-  // specialFriendsSound.play();
-};
-
-// Function to handle card click and display next word or sound
-const handleWordCardClick = (selectedBook) => {
-  // Increment the click counter
-  wordClickCounter++;
-  console.log(wordClickCounter);
-
-  if (wordClickCounter < 30) {
-    let nextWordIndex;
-    do {
-      // Generate a random index for the next word
-      nextWordIndex = Math.floor(
-        Math.random() * selectedBook.green_words.length
-      );
-    } while (nextWordIndex === currentWordIndex); // Ensure the next word is different from the current one
-    currentWordIndex = nextWordIndex;
-
-    displayCurrentWord(selectedBook);
-  } else if (wordClickCounter === 30) {
-    // Remove word space
-    const space = document.getElementById("wordContainer");
-    if (space) {
-      space.remove();
-    }
-
-    wordClickCounter = 0;
-    // Render words
-    renderBook(selectedBook);
-  }
 };
 
 // Create Book render
-const renderBook = (selectedBook) => {
+const renderBook = (selectedBook, speedsoundsData) => {
   // Remove existing book space if it exists
-  const existingWordSpace = document.getElementById("wordsContainer");
-  if (existingWordSpace) {
-    existingWordSpace.remove();
-  }
-
   const existingBookSpace = document.getElementById("bookPageContainer");
   if (existingBookSpace) {
     existingBookSpace.remove();
@@ -453,62 +475,6 @@ const renderBook = (selectedBook) => {
   totalPages = selectedBook.pages.length;
 };
 
-// Function to load and display the current book page
-const displayCurrentPage = (selectedBook) => {
-  const bookPage = document.getElementById("bookPage");
-  bookPage.src = `./assets/images/books/${selectedBook.code}/${selectedBook.pages[currentPageIndex]}.jpg`;
-};
-
-// Function to handle next page navigation
-const nextPage = (selectedBook) => {
-  if (currentPageIndex < totalPages - 1) {
-    currentPageIndex++;
-    displayCurrentPage(selectedBook);
-    updateNavigationButtons();
-  }
-};
-
-// Function to handle previous page navigation
-const previousPage = (selectedBook) => {
-  if (currentPageIndex > 0) {
-    currentPageIndex--;
-    displayCurrentPage(selectedBook);
-    updateNavigationButtons();
-  }
-};
-
-// Function to update navigation buttons based on current page
-const updateNavigationButtons = () => {
-  const prevButton = document.getElementById("prevButton");
-  const nextButton = document.getElementById("nextButton");
-  if (prevButton && nextButton) {
-    prevButton.disabled = currentPageIndex === 0;
-    nextButton.disabled = currentPageIndex === totalPages - 1;
-  }
-};
-
-// Create navigation buttons
-// Function to create navigation buttons with Font Awesome icons
-const createNavigationButtons = (selectedBook) => {
-  const prevButton = document.createElement("button");
-  prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-  prevButton.classList.add("navigation-button", "prev-button");
-  prevButton.addEventListener("click", () => previousPage(selectedBook));
-
-  const nextButton = document.createElement("button");
-  nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-  nextButton.classList.add("navigation-button", "next-button");
-  nextButton.addEventListener("click", () => nextPage(selectedBook));
-
-  // Append buttons to bookPageContainer
-  const bookPageContainer = document.getElementById("bookPageContainer");
-  bookPageContainer.appendChild(prevButton);
-  bookPageContainer.appendChild(nextButton);
-
-  // Update button states initially
-  updateNavigationButtons();
-};
-
 // Initialise code on load
 const init = () => {
   Promise.all([fetchData(speedsounds), fetchData(books), fetchData(sets)])
@@ -525,20 +491,9 @@ const init = () => {
 };
 
 /// TEMPORARY SCORING solution: Increment score by 1 when clicking the score button
-document.getElementById("success").addEventListener("click", function () {
+document.getElementById("scoreCard").addEventListener("click", function () {
   // Increment the score by 1
   score++; // Assuming score is a global variable representing the current score
-  // Update the score display
-  document.getElementById("score").textContent = score;
-
-  // Play the sound
-  const pointSound = document.getElementById("pointSound");
-  pointSound.currentTime = 0; // Rewind to the beginning in case the sound is already playing
-  pointSound.play();
-});
-
-document.getElementById("scoreCard").addEventListener("click", function () {
-  score = 0;
   // Update the score display
   document.getElementById("score").textContent = score;
 

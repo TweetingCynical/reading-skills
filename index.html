@@ -100,15 +100,26 @@
       </nav>
     </header>
 
+    <!-- Constants for audio -->
     <audio id="pointSound">
       <source src="./assets/audio/correct.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <audio id="specialFriendsSound">
+      <source src="./assets/audio/specialfriends.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <audio id="fredTalkSound">
+      <source src="./assets/audio/fredtalk.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
     <!-- max-width for ultra wide resolutions -->
     <div class="container-fluid">
       <div class="row">
-        <div>
+        <div class="wrapper">
           <!-- Create zone -->
           <!-- <section class="row justify-content-center">
             <section id="canvasBtns" class="p-3 col-lg-1 align-self-center">
@@ -199,8 +210,16 @@
             </section>
           </section> -->
           <section id="choices"></section>
-          <!-- <section id="speedsounds" class="speedsounds"></section>
-          <section id="redwords" class="redwords"></section> -->
+          <div id="gameBtns" class="hidden">
+            <img
+              id="success"
+              src="./assets/images/yellow-star.png"
+              class="gameBtn"
+            />
+            <img id="support" src="./assets/images/cone.png" class="gameBtn" />
+          </div>
+          <section id="speedsounds" class="speedsounds"></section>
+          <section id="words" class="words"></section>
           <section id="books" class="books"></section>
         </div>
       </div>

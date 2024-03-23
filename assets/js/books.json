@@ -215,7 +215,7 @@
     "code": "r4",
     "book": 4,
     "title": "Jam",
-    "focus_sounds": ["ve", "sh", "th", "ch"],
+    "focus_sounds": ["sh", "th", "ch"],
     "new_red_words": ["my"],
     "red_words": ["I", "of", "the"],
     "green_words": [
@@ -316,7 +316,7 @@
     "code": "r6",
     "book": 6,
     "title": "Wuff wuff",
-    "focus_sounds": ["ff", "ve", "ck", "qu"],
+    "focus_sounds": ["ff", "ck", "qu"],
     "new_red_words": [],
     "red_words": ["my", "I", "the", "of"],
     "green_words": [
@@ -867,7 +867,7 @@
     "code": "g7",
     "book": 7,
     "title": "Chips",
-    "focus_sounds": ["ve", "ch"],
+    "focus_sounds": ["ch"],
     "new_red_words": [],
     "red_words": [
       "I",
@@ -1022,7 +1022,7 @@
     "code": "g10",
     "book": 10,
     "title": "Stitch the witch",
-    "focus_sounds": ["ve", "sh", "th", "ng", "tch"],
+    "focus_sounds": ["sh", "th", "ng", "tch"],
     "new_red_words": [],
     "red_words": [
       "I",
@@ -1104,7 +1104,7 @@
     "code": "g2a",
     "book": "2A",
     "title": "Jan's pancake",
-    "focus_sounds": ["ss", "ve", "th", "wh", "tch"],
+    "focus_sounds": ["ss", "th", "wh", "tch"],
     "new_red_words": ["pancake", "for"],
     "red_words": [
       "said",
@@ -1245,7 +1245,7 @@
     "code": "g5a",
     "book": "5A",
     "title": "Go and play",
-    "focus_sounds": ["ff", "ve", "th", "nk", "ck", "ch"],
+    "focus_sounds": ["ff", "th", "nk", "ck", "ch"],
     "new_red_words": ["now", "play", "too"],
     "red_words": ["said", "to", "the", "go", "I", "she", "my", "no", "you"],
     "green_words": [
@@ -1282,7 +1282,7 @@
     "code": "g4nf",
     "book": "4NF",
     "title": "What am I?",
-    "focus_sounds": ["ve", "sh", "th", "nk", "ck", "tch"],
+    "focus_sounds": ["sh", "th", "nk", "ck", "tch"],
     "new_red_words": ["like", "what", "all", "ball"],
     "red_words": ["I", "your", "go", "of", "some", "do", "my", "no"],
     "green_words": [
@@ -1295,7 +1295,20 @@
       "lap",
       "moths"
     ],
-    "speedy_green_words": ["have", "got", "legs", "fish", "cat", "big", "black", "can", "catch", "milk", "sit", "and"],
+    "speedy_green_words": [
+      "have",
+      "got",
+      "legs",
+      "fish",
+      "cat",
+      "big",
+      "black",
+      "can",
+      "catch",
+      "milk",
+      "sit",
+      "and"
+    ],
     "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
   }
 ]
