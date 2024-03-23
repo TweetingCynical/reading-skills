@@ -435,6 +435,8 @@ const renderBook = (selectedBook) => {
     existingBookSpace.remove();
   }
 
+  gameBtns.classList = "hidden";
+
   const bookPageContainer = document.createElement("div");
   bookPageContainer.id = "bookPageContainer";
   bookPageContainer.classList = "mt-3 shadow-lg rounded";
