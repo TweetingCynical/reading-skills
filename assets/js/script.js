@@ -163,19 +163,19 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
   let numIterations;
   const focusSoundsCount = selectedBook.focus_sounds.length;
   if (focusSoundsCount === 1) {
-    numIterations = 15;
+    numIterations = 5; // Formerly 15
   } else if (focusSoundsCount === 2) {
-    numIterations = 9;
+    numIterations = 3; // Formerly 9
   } else if (focusSoundsCount === 3) {
-    numIterations = 6;
-  } else if (focusSoundsCount === 4) {
-    numIterations = 5;
-  } else if (focusSoundsCount === 5) {
-    numIterations = 4;
-  } else if (focusSoundsCount === 6) {
-    numIterations = 3;
+    numIterations = 2; // Formerly 6
+    // } else if (focusSoundsCount === 4) {
+    //   numIterations = 5;
+    // } else if (focusSoundsCount === 5) {
+    //   numIterations = 4;
+    // } else if (focusSoundsCount === 6) {
+    //   numIterations = 3;
   } else {
-    numIterations = 2;
+    numIterations = 1; // Formerly 2
   }
 
   for (let i = 0; i < numIterations; i++) {
@@ -194,8 +194,8 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
         newArray.push(sound);
         focusSoundsAdded++;
 
-        // If we've reached 30 items, break out of the loop
-        if (focusSoundsAdded >= 30) {
+        // If we've reached 10 items, break out of the loop
+        if (focusSoundsAdded >= 10) {
           return;
         }
       });
@@ -205,8 +205,8 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
   // Shuffle the array to randomize sound order
   shuffleArray(newArray);
 
-  // If newArray is still less than 30 items, add random sounds from speedsoundsData until it reaches 30
-  while (newArray.length < 30) {
+  // If newArray is still less than 10 items, add random sounds from speedsoundsData until it reaches 30
+  while (newArray.length < 10) {
     const randomCollection =
       speedsoundsData[Math.floor(Math.random() * speedsoundsData.length)];
     const randomSound =
@@ -216,8 +216,8 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
     newArray.push(randomSound);
   }
 
-  // Ensure newArray contains at most 30 elements
-  newArray = newArray.slice(0, 30);
+  // Ensure newArray contains at most 10 elements
+  newArray = newArray.slice(0, 10);
 
   // Hide dropdowns
   const setsDropdown = document.getElementById("setsDropdown");
@@ -289,14 +289,12 @@ const renderSpeedSounds = (selectedBook, speedsoundsData, resultArray) => {
   soundsSpace.appendChild(soundCard);
   soundsSpace.appendChild(soundImg);
 
-  console.log(`selectedRefValue in renderSpeedSounds is: ${selectedRefValue}`);
   // Display first sound
   displayCurrentSound(newArray[0]);
 };
 
 // Function to display current sound
 const displayCurrentSound = (sound) => {
-  console.log(`selectedRefValue in displayCurrentSound is: ${refValue}`);
   const soundCard = document.getElementById("soundCard");
   if (!soundCard) return; // Ensure soundCard element exists
 
@@ -319,13 +317,11 @@ const handleSoundCardClick = (selectedBook, newArray, clickedSuccessBtn) => {
   // Only push to cardsSkipped if the click wasn't on the successBtn
   if (!clickedSuccessBtn) {
     cardsSkipped.speedsounds.push(newArray[soundClickCounter - 1]); // Push the value of the previous sound clicked
-    console.log(cardsSkipped);
   }
 
-  if (soundClickCounter < 30) {
-    console.log("Click count less than 30");
+  if (soundClickCounter < 10) {
     displayCurrentSound(newArray[soundClickCounter]);
-  } else if (soundClickCounter === 30) {
+  } else if (soundClickCounter === 10) {
     const space = document.getElementById("soundsSpace");
     if (space) {
       space.remove();
@@ -373,7 +369,7 @@ const displayCurrentWord = (selectedBook) => {
   if (!wordCard) return; // Ensure wordCard element exists
 
   let currentWord;
-  let wordTypeClass;
+  // let wordTypeClass;
 
   // Arrays with values
   const arraysWithValue = [];
@@ -444,10 +440,9 @@ const handleWordCardClick = (selectedBook, clickedSuccessBtn, wordType) => {
     } else if (wordType === "red-word" || wordType === "new-red-word") {
       cardsSkipped.red_words.push(currentWord);
     }
-    console.log(cardsSkipped);
   }
 
-  if (wordClickCounter < 30) {
+  if (wordClickCounter < 15) {
     let nextWordIndex;
     do {
       // Generate a random index for the next word
@@ -458,7 +453,7 @@ const handleWordCardClick = (selectedBook, clickedSuccessBtn, wordType) => {
     currentWordIndex = nextWordIndex;
 
     displayCurrentWord(selectedBook);
-  } else if (wordClickCounter === 30) {
+  } else if (wordClickCounter === 15) {
     // Remove word space
     const space = document.getElementById("wordContainer");
     if (space) {
