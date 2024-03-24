@@ -332,6 +332,14 @@ const handleSoundCardClick = (selectedBook, newArray, clickedSuccessBtn) => {
   }
 };
 
+// Remove any duplicates (intended for the cardsSkipped object)
+const removeDuplicates = (obj) => {
+  Object.keys(obj).forEach((key) => {
+    // Convert each array to a Set to remove duplicates, then convert back to an array
+    obj[key] = [...new Set(obj[key])];
+  });
+};
+
 // Update renderWords function
 const renderWords = (selectedBook) => {
   const existingWordSpace = document.getElementById("wordsContainer");
@@ -461,6 +469,10 @@ const handleWordCardClick = (selectedBook, clickedSuccessBtn, wordType) => {
     }
 
     wordClickCounter = 0;
+
+    // Remove duplicates from cardsSkipped
+    removeDuplicates(cardsSkipped);
+
     // Render words
     renderBook(selectedBook);
   }
