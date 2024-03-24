@@ -7,6 +7,7 @@ let currentWordIndex = 0;
 let soundClickCounter = 0;
 let wordClickCounter = 0;
 let selectedRefValue = null;
+const cardsSkipped = { speedsounds: [], green_words: [], red_words: [] };
 
 // Constants
 const speedsounds = "assets/js/speedsounds.json";
@@ -229,7 +230,6 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
 };
 
 // Attach correct sound file source to support button
-// Attach correct sound file source to support button
 const updateSupportSoundSource = (type, refValue, itemValue) => {
   const filePath = `./assets/audio/${type}/${refValue}/${itemValue}.mp3`;
 
@@ -269,10 +269,10 @@ const renderSpeedSounds = (selectedBook, speedsoundsData, resultArray) => {
   soundsSpace.classList = "m-3 p-3 shadow-lg rounded";
   speedSoundsSection.appendChild(soundsSpace);
   soundsSpace.addEventListener("click", () =>
-    handleSoundCardClick(selectedBook, speedsoundsData, newArray)
+    handleSoundCardClick(selectedBook, newArray, false)
   );
   successBtn.addEventListener("click", () =>
-    handleSoundCardClick(selectedBook, speedsoundsData, newArray)
+    handleSoundCardClick(selectedBook, newArray, true)
   );
 
   // Create initial sound card
@@ -312,9 +312,15 @@ const displayCurrentSound = (sound) => {
 };
 
 // Function to handle card click and display next word or sound
-const handleSoundCardClick = (selectedBook, speedsoundsData, newArray) => {
+const handleSoundCardClick = (selectedBook, newArray, clickedSuccessBtn) => {
   // Increment the click counter
   soundClickCounter++;
+
+  // Only push to cardsSkipped if the click wasn't on the successBtn
+  if (!clickedSuccessBtn) {
+    cardsSkipped.speedsounds.push(newArray[soundClickCounter - 1]); // Push the value of the previous sound clicked
+    console.log(cardsSkipped);
+  }
 
   if (soundClickCounter < 30) {
     console.log("Click count less than 30");
@@ -348,10 +354,10 @@ const renderWords = (selectedBook) => {
   wordCard.id = "wordCard";
   wordCard.classList = "card d-flex m-3 p-3 shadow-lg rounded";
   wordSpace.addEventListener("click", () => {
-    handleWordCardClick(selectedBook);
+    handleWordCardClick(selectedBook, false, currentWordType);
   });
   successBtn.addEventListener("click", () => {
-    handleWordCardClick(selectedBook);
+    handleWordCardClick(selectedBook, true, currentWordType);
   });
   wordSpace.appendChild(wordCard);
 
@@ -421,13 +427,25 @@ const displayCurrentWord = (selectedBook) => {
 
   // Update word card with current word
   wordCard.textContent = currentWord;
+  currentWordType = type;
 };
 
 // Function to handle card click and display next word or sound
-const handleWordCardClick = (selectedBook) => {
+const handleWordCardClick = (selectedBook, clickedSuccessBtn, wordType) => {
+  const wordCard = document.getElementById("wordCard");
+  const currentWord = wordCard.textContent;
   // Increment the click counter
   wordClickCounter++;
-  console.log(wordClickCounter);
+
+  if (!clickedSuccessBtn) {
+    // Only push to cardsSkipped if the click wasn't on the successBtn
+    if (wordType === "green-word") {
+      cardsSkipped.green_words.push(currentWord);
+    } else if (wordType === "red-word" || wordType === "new-red-word") {
+      cardsSkipped.red_words.push(currentWord);
+    }
+    console.log(cardsSkipped);
+  }
 
   if (wordClickCounter < 30) {
     let nextWordIndex;
