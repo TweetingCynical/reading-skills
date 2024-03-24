@@ -21,6 +21,7 @@ const booksSection = document.getElementById("books");
 const gameBtns = document.getElementById("gameBtns");
 const successBtn = document.getElementById("success");
 const supportBtn = document.getElementById("support");
+const supportSound = document.getElementById("supportSound");
 
 // Add event listeners to elements by ID
 const addEventListeners = (setsData, booksData, speedsoundsData) => {
@@ -227,10 +228,35 @@ const randmonisedSpeedSounds = (selectedBook, speedsoundsData) => {
   return [newArray, refValue];
 };
 
+// Attach correct sound file source to support button
+// Attach correct sound file source to support button
+const updateSupportSoundSource = (type, refValue, itemValue) => {
+  const filePath = `./assets/audio/${type}/${refValue}/${itemValue}.mp3`;
+
+  // Use fetch to check if the file exists
+  fetch(filePath)
+    .then((response) => {
+      if (!response.ok) {
+        // File doesn't exist, use default source
+        supportSound.src = "./assets/audio/nosupport.mp3";
+      } else {
+        // File exists, set the source to the actual file
+        supportSound.src = filePath;
+      }
+    })
+    .catch((error) => {
+      // Error occurred, use default source
+      console.error("Error checking file existence:", error);
+      supportSound.src = "./assets/audio/nosupport.mp3";
+    });
+};
+
 // Function to render speed sounds based on selected book and speedsounds data
 const renderSpeedSounds = (selectedBook, speedsoundsData, resultArray) => {
   newArray = resultArray[0];
   selectedRefValue = resultArray[1];
+
+  updateSupportSoundSource("speedsounds", selectedRefValue, newArray[0]);
 
   // Remove existing speed sounds space if it exists
   const existingSpeedSoundsSpace = document.getElementById("soundsSpace");
@@ -263,12 +289,14 @@ const renderSpeedSounds = (selectedBook, speedsoundsData, resultArray) => {
   soundsSpace.appendChild(soundCard);
   soundsSpace.appendChild(soundImg);
 
+  console.log(`selectedRefValue in renderSpeedSounds is: ${selectedRefValue}`);
   // Display first sound
   displayCurrentSound(newArray[0]);
 };
 
 // Function to display current sound
 const displayCurrentSound = (sound) => {
+  console.log(`selectedRefValue in displayCurrentSound is: ${refValue}`);
   const soundCard = document.getElementById("soundCard");
   if (!soundCard) return; // Ensure soundCard element exists
 
@@ -280,6 +308,7 @@ const displayCurrentSound = (sound) => {
 
   // Update sound image source based on sound text and selected refValue
   soundImg.src = `./assets/images/speedsounds/${selectedRefValue}/${sound}.png`;
+  updateSupportSoundSource("speedsounds", selectedRefValue, sound);
 };
 
 // Function to handle card click and display next word or sound
@@ -382,14 +411,16 @@ const displayCurrentWord = (selectedBook) => {
   wordCard.className = `d-flex m-3 p-3`;
   wordSpace.className = `${type} shadow-lg rounded justify-content-center`;
 
+  if (type === "green-word") {
+    // Play the sound
+    const specialFriendsSound = document.getElementById("specialFriendsSound");
+    // Rewind to the beginning in case the sound is already playing
+    specialFriendsSound.currentTime = 0;
+    specialFriendsSound.play();
+  }
+
   // Update word card with current word
   wordCard.textContent = currentWord;
-
-  // // Play the sound
-  // const specialFriendsSound = document.getElementById("specialFriendsSound");
-  // // Rewind to the beginning in case the sound is already playing
-  // specialFriendsSound.currentTime = 0;
-  // specialFriendsSound.play();
 };
 
 // Function to handle card click and display next word or sound
@@ -537,6 +568,12 @@ document.getElementById("success").addEventListener("click", function () {
   const pointSound = document.getElementById("pointSound");
   pointSound.currentTime = 0; // Rewind to the beginning in case the sound is already playing
   pointSound.play();
+});
+
+document.getElementById("support").addEventListener("click", function () {
+  // Play the sound
+  supportSound.currentTime = 0; // Rewind to the beginning in case the sound is already playing
+  supportSound.play();
 });
 
 document.getElementById("scoreCard").addEventListener("click", function () {
