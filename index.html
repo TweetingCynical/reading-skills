@@ -120,6 +120,22 @@
     <div class="container-fluid">
       <div class="row">
         <div class="wrapper">
+          <section id="choices"></section>
+          <div id="gameBtns" class="hidden">
+            <img
+              id="success"
+              src="./assets/images/yellow-star.png"
+              class="gameBtn"
+            />
+            <img id="support" src="./assets/images/cone.png" class="gameBtn" />
+            <audio id="supportSound">
+              <source src="./assets/audio/nosupport.mp3" type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          <section id="speedsounds" class="speedsounds"></section>
+          <section id="words" class="words"></section>
+          <section id="books" class="books"></section>
           <!-- Create zone -->
           <!-- <section class="row justify-content-center">
             <section id="canvasBtns" class="p-3 col-lg-1 align-self-center">
@@ -209,22 +225,6 @@
               />
             </section>
           </section> -->
-          <section id="choices"></section>
-          <div id="gameBtns" class="hidden">
-            <img
-              id="success"
-              src="./assets/images/yellow-star.png"
-              class="gameBtn"
-            />
-            <img id="support" src="./assets/images/cone.png" class="gameBtn" />
-            <audio id="supportSound">
-              <source src="./assets/audio/nosupport.mp3" type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-          <section id="speedsounds" class="speedsounds"></section>
-          <section id="words" class="words"></section>
-          <section id="books" class="books"></section>
         </div>
       </div>
     </div>
@@ -232,6 +232,7 @@
     <!-- Footer -->
     <!-- Link to JavaScript -->
     <script src="./assets/js/script.js"></script>
+    <!-- <script src="./assets/js/canvas.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
