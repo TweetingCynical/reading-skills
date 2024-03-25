@@ -1,7 +1,12 @@
-//!Initial setup
+const speedsounds = "assets/js/speedsounds.json";
+const books = "assets/js/books.json";
+const sets = "assets/js/sets.json";
 const canvas = document.getElementById("myCanvas");
-const penColorImages = document.querySelectorAll(".pen-color");
 const ctx = canvas.getContext("2d");
+const choices = document.getElementsByClassName("choices");
+const speedSoundsSection = document.getElementById("speedsounds");
+const redWordsSection = document.getElementById("redwords");
+const booksSection = document.getElementById("books");
 
 // Set pen colours
 const penColors = {
@@ -14,57 +19,52 @@ const penColors = {
   eraser: "white",
 };
 
-//!State variables
+// Function to handle pen color change
+function changePenColor(color) {
+  ctx.strokeStyle = color;
+}
+
+// Add event listeners to each pen color image
+const penColorImages = document.querySelectorAll(".pen-color");
+penColorImages.forEach((image) => {
+  image.addEventListener("click", function () {
+    const colorId = this.id;
+    const color = penColors[colorId];
+    if (color) {
+      changePenColor(color);
+    }
+
+    // Toggle class 'selectedBtn' for the clicked image
+    this.classList.add("selectedBtn");
+
+    // Remove class 'selectedBtn' from all other pen color images
+    penColorImages.forEach((img) => {
+      if (img !== this) {
+        img.classList.remove("selectedBtn");
+      }
+    });
+  });
+});
+
 const undoStack = []; // Stack to store drawing actions for undo
 const redoStack = []; // Stack to store undone actions for redo
+
+// Event listener for undo button
+document.getElementById("undo").addEventListener("click", undo);
+
+// Event listener for redo button
+document.getElementById("redo").addEventListener("click", redo);
+
+// Event listener for refresh button
+document.getElementById("refresh").addEventListener("click", refreshCanvas);
 
 // Variables to track mouse movements
 let painting = false;
 let lastX = 0;
 let lastY = 0;
 
-//!Event Listeners
-const setupEventListeners = () => {
-  // Event listener to track mouse movements
-  canvas.addEventListener("mousedown", startPainting);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mousemove", draw);
-
-  // Add touch event listeners
-  canvas.addEventListener("touchstart", startPainting, { passive: false });
-  canvas.addEventListener("touchend", stopPainting, { passive: false });
-  canvas.addEventListener("touchmove", draw, { passive: false });
-
-  // Event listener for undo, redo and refresh buttons
-  document.getElementById("undo").addEventListener("click", undo);
-  document.getElementById("redo").addEventListener("click", redo);
-  document.getElementById("refresh").addEventListener("click", refreshCanvas);
-
-  // Add event listeners to each pen color image
-  penColorImages.forEach((image) => {
-    image.addEventListener("click", function () {
-      const colorId = this.id;
-      const color = penColors[colorId];
-      if (color) {
-        changePenColor(color);
-      }
-
-      // Toggle class 'selectedBtn' for the clicked image
-      this.classList.add("selectedBtn");
-
-      // Remove class 'selectedBtn' from all other pen color images
-      penColorImages.forEach((img) => {
-        if (img !== this) {
-          img.classList.remove("selectedBtn");
-        }
-      });
-    });
-  });
-};
-
-//!Drawing functions
 // Function to start painting
-const startPainting = (e) => {
+function startPainting(e) {
   painting = true;
   let clientX, clientY;
 
@@ -82,20 +82,105 @@ const startPainting = (e) => {
   lastY = e.clientY - canvasRect.top;
 
   draw();
-};
+}
+
+// Event listener to track mouse movements
+canvas.addEventListener("mousedown", startPainting);
+canvas.addEventListener("mouseup", stopPainting);
+canvas.addEventListener("mousemove", draw);
+
+// Add touch event listeners
+canvas.addEventListener("touchstart", startPainting, { passive: false });
+canvas.addEventListener("touchend", stopPainting, { passive: false });
+canvas.addEventListener("touchmove", draw, { passive: false });
 
 // Modified event listener to stop painting, compatible with touch
-const stopPainting = (e) => {
+function stopPainting(e) {
   if (e.type.includes("touch")) {
     e.preventDefault(); // Prevent scrolling/zooming
   }
   painting = false;
   ctx.beginPath(); // Start a new path for subsequent drawings
   updateButtonStates(); // Update button states
-};
+}
+
+function updateButtonStates() {
+  const undoButton = document.getElementById("undo");
+  const redoButton = document.getElementById("redo");
+  const saveButton = document.getElementById("save"); // Assuming you have a save button
+  const refreshButton = document.getElementById("refresh");
+
+  // Updating undo and redo buttons based on their respective stacks
+  undoButton.classList.toggle("deactivated", undoStack.length === 0);
+  redoButton.classList.toggle("deactivated", redoStack.length === 0);
+
+  // Deactivate save and refresh buttons if undo stack is empty
+  const isCanvasClean = undoStack.length === 0;
+  saveButton.classList.toggle("deactivated", isCanvasClean);
+  refreshButton.classList.toggle("deactivated", isCanvasClean);
+}
+
+// Function to undo the last drawing action
+function undo() {
+  let lastColor = null;
+  let consecutiveSameColorActions = 0;
+
+  while (undoStack.length > 0) {
+    const action = undoStack.pop();
+    if (action.type === "draw") {
+      if (lastColor === null) {
+        lastColor = action.color;
+        consecutiveSameColorActions++;
+      } else if (lastColor === action.color) {
+        consecutiveSameColorActions++;
+      } else {
+        // Different color encountered, stop undoing
+        undoStack.push(action); // Push back the action for the different color
+        break;
+      }
+    }
+
+    // Draw the action
+    redrawCanvas();
+
+    if (consecutiveSameColorActions === 20) {
+      // Undo all actions with the same color
+      break;
+    }
+
+    // Push undone action onto redo stack
+    redoStack.push(action);
+  }
+
+  // Reset consecutiveSameColorActions counter
+  consecutiveSameColorActions = 0;
+  updateButtonStates(); // Update button states after redo
+}
+
+// Function to redo the last undone action
+// Function to redo the last undone action
+function redo() {
+  if (redoStack.length > 0) {
+    const lastRedoAction = redoStack.pop(); // Get the last action from redo stack
+
+    if (lastRedoAction.type === "draw") {
+      undoStack.push(lastRedoAction); // Push the action back to undo stack
+      redrawCanvas(); // Redraw canvas with the last undone action
+    }
+  }
+  updateButtonStates(); // Update button states after redo
+}
+
+// Function to refresh the canvas (wipe clean)
+function refreshCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+  undoStack.length = 0; // Clear undo stack
+  redoStack.length = 0; // Clear redo stack
+  updateButtonStates(); // Update button states after redo
+}
 
 // Function to handle drawing actions
-const draw = (e) => {
+function draw(e) {
   if (!painting || !e) return;
 
   let clientX, clientY;
@@ -145,91 +230,10 @@ const draw = (e) => {
 
   lastX = mouseX;
   lastY = mouseY;
-};
-
-//!Utility functions
-
-// Function to handle pen color change
-const changePenColor = (color) => {
-  ctx.strokeStyle = color;
-};
-
-const updateButtonStates = () => {
-  const undoButton = document.getElementById("undo");
-  const redoButton = document.getElementById("redo");
-  const saveButton = document.getElementById("save"); // Assuming you have a save button
-  const refreshButton = document.getElementById("refresh");
-
-  // Updating undo and redo buttons based on their respective stacks
-  undoButton.classList.toggle("deactivated", undoStack.length === 0);
-  redoButton.classList.toggle("deactivated", redoStack.length === 0);
-
-  // Deactivate save and refresh buttons if undo stack is empty
-  const isCanvasClean = undoStack.length === 0;
-  saveButton.classList.toggle("deactivated", isCanvasClean);
-  refreshButton.classList.toggle("deactivated", isCanvasClean);
-};
-
-// Function to undo the last drawing action
-const undo = () => {
-  let lastColor = null;
-  let consecutiveSameColorActions = 0;
-
-  while (undoStack.length > 0) {
-    const action = undoStack.pop();
-    if (action.type === "draw") {
-      if (lastColor === null) {
-        lastColor = action.color;
-        consecutiveSameColorActions++;
-      } else if (lastColor === action.color) {
-        consecutiveSameColorActions++;
-      } else {
-        // Different color encountered, stop undoing
-        undoStack.push(action); // Push back the action for the different color
-        break;
-      }
-    }
-
-    // Draw the action
-    redrawCanvas();
-
-    if (consecutiveSameColorActions === 20) {
-      // Undo all actions with the same color
-      break;
-    }
-
-    // Push undone action onto redo stack
-    redoStack.push(action);
-  }
-
-  // Reset consecutiveSameColorActions counter
-  consecutiveSameColorActions = 0;
-  updateButtonStates(); // Update button states after redo
-};
-
-// Function to redo the last undone action
-const redo = () => {
-  if (redoStack.length > 0) {
-    const lastRedoAction = redoStack.pop(); // Get the last action from redo stack
-
-    if (lastRedoAction.type === "draw") {
-      undoStack.push(lastRedoAction); // Push the action back to undo stack
-      redrawCanvas(); // Redraw canvas with the last undone action
-    }
-  }
-  updateButtonStates(); // Update button states after redo
-};
-
-// Function to refresh the canvas (wipe clean)
-const refreshCanvas = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-  undoStack.length = 0; // Clear undo stack
-  redoStack.length = 0; // Clear redo stack
-  updateButtonStates(); // Update button states after redo
-};
+}
 
 // Function to redraw canvas based on drawing actions in the undo stack
-const redrawCanvas = () => {
+function redrawCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
   undoStack.forEach((action) => {
     if (action.type === "draw") {
@@ -238,18 +242,17 @@ const redrawCanvas = () => {
       drawAction(action.path);
     }
   });
-};
+}
 
 // Function to draw a single action
-const drawAction = (path) => {
+function drawAction(path) {
   ctx.beginPath();
   ctx.moveTo(path.startX, path.startY);
   ctx.lineTo(path.endX, path.endY);
   ctx.stroke();
-};
+}
 
 const initCanvas = () => {
-  setupEventListeners();
   updateButtonStates();
 };
 

@@ -77,6 +77,12 @@ body {
   font-family: "Standard";
 }
 
+#canvasSpace,
+#canvasTools,
+#canvasBtns {
+  justify-content: center;
+}
+
 .wrapper {
   position: relative;
 }
@@ -198,6 +204,7 @@ body {
   height: 600px; */
   border: 5px solid var(--darkBlue);
   cursor: crosshair;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .canvasBtn {
